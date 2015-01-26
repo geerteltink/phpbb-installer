@@ -1,0 +1,19 @@
+{
+	"name": "twentyfirsthall/phpbb-installer",
+	"description": "Composer installer for phpBB.",
+	"homepage": "https://github.com/twentyfirsthall/phpbb-installer",
+    "license": "MIT",
+    "authors": [{
+        "name"    : "Geert Eltink",
+        "homepage": "https://xtreamwayz.github.io/",
+        "role"    : "Lead Developer"
+    }]
+	"require": {
+		"php": ">=5.3.3"
+	},
+    "autoload": {
+        "psr-4": {
+            "TwentyFirstHall\\PhpbbInstaller\\": "src/"
+        }
+    }
+}
