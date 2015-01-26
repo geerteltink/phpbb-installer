@@ -6,30 +6,170 @@ use Composer\Script\Event;
 
 class ScriptHandler
 {
-    public static function postInstall(Event $event)
-    {
-        $composer = $event->getComposer();
-    }
+    private static $permissions = array(
+        '/cache' => 0777,
+        '/files' => 0777,
+        '/images/avatars/upload' => 0777,
+        '/store' => 0777,
+        '/config.php' => 0644
+    );
 
-    public static function postUpdate(Event $event)
-    {
-        $composer = $event->getComposer();
-    }
+    private static $resources = array(
+        // Complete dirs
+        '/adm' => '/adm',
+        '/assets' => '/assets',
+        '/bin' => '/bin',
+        '/cache' => '/cache',
+        '/config' => '/config',
+        '/download' => '/download',
+        '/ext' => '/ext',
+        '/files' => '/files',
+        '/images' => '/images',
+        '/includes' => '/includes',
+        '/install' => '/install',
+        '/language' => '/language',
+        '/phpbb' => '/phpbb',
+        '/store' => '/store',
+        '/styles' => '/styles',
 
-    // Test composer scripts with:
-    //      composer run-script post-install-cmd
+        // Files
+        '/.htaccess' => '/.htaccess.dist',
+        '/app.php' => '/app.php',
+        '/common.php' => '/common.php',
+        '/cron.php' => '/cron.php',
+        '/faq.php' => '/faq.php',
+        '/feed.php' => '/feed.php',
+        '/index.php' => '/index.php',
+        '/mcp.php' => '/mcp.php',
+        '/memberlist.php' => '/memberlist.php',
+        '/posting.php' => '/posting.php',
+        '/report.php' => '/report.php',
+        '/search.php' => '/search.php',
+        '/ucp.php' => '/ucp.php',
+        '/viewforum.php' => '/viewforum.php',
+        '/viewonline.php' => '/viewonline.php',
+        '/viewtopic.php' => '/viewtopic.php',
+    );
+
+    /**
+     * Install phpBB
+     *
+     * Run ``composer run-script post-install-cmd`` to test the script.
+     *
+     * @param Event $event
+     */
     public static function install(Event $event)
     {
-        $composer = $event->getComposer();
         $eventName = $event->getName();
         $io = $event->getIO();
 
-        var_dump($eventName);
+        $composer = $event->getComposer();
+        $packages = $composer->getRepositoryManager()->getLocalRepository()->getPackages();
+        $installationManager = $composer->getInstallationManager();
 
-        // Copy
-        //
+        // Get project dir
+        $projectDir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 
-        // Symlink
-        // Install dir is always copied so it can be deleted without deleting the source
+        // Get phpbb installation dir
+        $topExtra = $composer->getPackage()->getExtra();
+        $installationDir = 'phpbb';
+        if (!empty($topExtra['phpbb-install-dir'])) {
+            $installationDir = $topExtra['phpbb-install-dir'];
+        }
+
+        $dest = $projectDir . DIRECTORY_SEPARATOR  . $installationDir;
+
+        $phpbbPackage = false;
+        /* @var $package \Composer\Package\PackageInterface */
+        foreach ($packages as $package) {
+            if ($package->getName() == 'phpbb/phpbb'
+                && version_compare($package->getVersion(), '3.1.0') >= 0
+            ) {
+                $io->write(sprintf('<info>Detected phpBB %s</info>', $package->getVersion()));
+                $phpbbPackage = $package;
+            }
+        }
+
+        if (!$phpbbPackage) {
+            $io->write('<error>phpBB is not installed!</error>');
+            return;
+        }
+
+        if (!is_dir($dest)) {
+            if (!mkdir($dest, 0644, true)) {
+                $io->write(sprintf('<error>Failed to create destination: </error>', $dest));
+                return;
+            }
+            $io->write(sprintf('<info>Created destination: </info>', $dest));
+        }
+
+        // Get phpBB vendor dir
+        $src = $installationManager->getInstallPath($phpbbPackage);
+
+        // Copy resources
+        $io->write('<info>Copying resources</info>', false);
+        foreach (self::$resources as $resource => $destination) {
+            self::xcopy($src . $resource, $dest . $destination, 0644);
+            $io->write('.', false);
+        }
+        $io->write(' <info>Done!</info>');
+
+        // Set permissions
+        $io->write('<info>Setting permissions</info>', false);
+        foreach (self::$permissions as $resource => $permission) {
+            if (!file_exists($dest . $resource)) {
+                $io->write('<comment>.</comment>', false);
+            } elseif (chmod($dest . $resource, $permission)) {
+                $io->write('.', false);
+            } else {
+                $io->write('<error>F</error>', false);
+            }
+        }
+        $io->write(' <info>Done!</info>');
+
+        return;
+    }
+
+    /**
+     * Copy a file, or recursively copy a folder and its contents
+     *
+     * @param       string $source Source path
+     * @param       string $dest Destination path
+     * @param int|string $permissions New folder creation permissions
+     *
+     * @return bool Returns true on success, false on failure
+     */
+    private static function xcopy($source, $dest, $permissions = 0644)
+    {
+        // Check for symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
+        }
+
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest, $permissions);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            self::xcopy("$source/$entry", "$dest/$entry", $permissions);
+        }
+
+        // Clean up
+        $dir->close();
+        return true;
     }
 }
