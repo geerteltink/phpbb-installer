@@ -11,7 +11,7 @@ class ScriptHandler
         '/files' => 0777,
         '/images/avatars/upload' => 0777,
         '/store' => 0777,
-        '/config.php' => 0644
+        '/config.php' => 0640
     );
 
     private static $resources = array(
