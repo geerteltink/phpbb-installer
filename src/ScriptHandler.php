@@ -33,7 +33,6 @@ class ScriptHandler
         '/styles' => '/styles',
 
         // Files
-        '/.htaccess' => '/.htaccess.dist',
         '/app.php' => '/app.php',
         '/common.php' => '/common.php',
         '/cron.php' => '/cron.php',
@@ -126,6 +125,16 @@ class ScriptHandler
             }
         }
         $io->write(' <info>Done!</info>');
+
+        // Setup .htaccess
+        $autoloader = $projectDir . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        $content = <<<EOF
+SetEnv PHPBB_NO_COMPOSER_AUTOLOAD true
+SetEnv PHPBB_AUTOLOAD $autoloader
+
+EOF;
+        $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
+        file_put_contents($dest . DIRECTORY_SEPARATOR . '.htaccess', $content);
 
         // Ready
         $io->write(sprintf(
