@@ -136,10 +136,11 @@ EOF;
         $io->write('<info>Patching .htaccess</info>', false);
         $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
         if (false !== file_put_contents($dest . DIRECTORY_SEPARATOR . '.htaccess', $content)) {
-            $io->write('. <info>Done!</info>');
+            $io->write('.', false);
         } else {
-            $io->write(' <error>Failed</error>');
+            $io->write('<error>F</error>', false);
         }
+        $io->write(' <info>Done!</info>');
 
         // Ready
         $io->write(sprintf(
