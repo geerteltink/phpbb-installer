@@ -127,7 +127,12 @@ class ScriptHandler
         }
         $io->write(' <info>Done!</info>');
 
-        return;
+        // Ready
+        $io->write(sprintf(
+            '<comment>Please open %s and delete %s afterwards.</comment>',
+            'http://your-site.com/install/database_update.php',
+            $dest . DIRECTORY_SEPARATOR . 'install'
+        ));
     }
 
     /**
