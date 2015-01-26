@@ -133,8 +133,13 @@ SetEnv PHPBB_NO_COMPOSER_AUTOLOAD true
 SetEnv PHPBB_AUTOLOAD $autoloader
 
 EOF;
+        $io->write('<info>Patching .htaccess</info>', false);
         $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
-        file_put_contents($dest . DIRECTORY_SEPARATOR . '.htaccess', $content);
+        if (false !== file_put_contents($dest . DIRECTORY_SEPARATOR . '.htaccess', $content)) {
+            $io->write('. <info>Done!</info>');
+        } else {
+            $io->write(' <error>Failed</error>');
+        }
 
         // Ready
         $io->write(sprintf(
