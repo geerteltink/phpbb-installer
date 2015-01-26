@@ -7,7 +7,7 @@
         "name"    : "Geert Eltink",
         "homepage": "https://xtreamwayz.github.io/",
         "role"    : "Lead Developer"
-    }]
+    }],
 	"require": {
 		"php": ">=5.3.3"
 	},
