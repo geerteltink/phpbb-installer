@@ -1,0 +1,3 @@
+# Composer phpBB installer
+
+More info soon...
