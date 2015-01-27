@@ -10,41 +10,41 @@ To let phpBB know where the vendor lib is located, 2 settings are added to ``.ht
 
 1. In your composer.json project file require phpbb-installer.
 
-    "require": {
-        "twentyfirsthall/phpbb-installer": "dev-master",
-        "phpbb/phpbb": "3.1.*",
-        "composer/installers": "~1.0"
-    }
+        "require": {
+            "twentyfirsthall/phpbb-installer": "dev-master",
+            "phpbb/phpbb": "3.1.*",
+            "composer/installers": "~1.0"
+        }
 
 2. Add the installer scripts.
 
-    "scripts": {
-        "post-update-cmd": "TwentyFirstHall\\PhpbbInstaller\\ScriptHandler::install",
-        "post-install-cmd": "TwentyFirstHall\\PhpbbInstaller\\ScriptHandler::install"
-    },
+        "scripts": {
+            "post-update-cmd": "TwentyFirstHall\\PhpbbInstaller\\ScriptHandler::install",
+            "post-install-cmd": "TwentyFirstHall\\PhpbbInstaller\\ScriptHandler::install"
+        },
 
 3. Configure the ``php-install-dir`` and the ``installer-paths`` for phpBB extensions, styles and languages.
 
-    "extra": {
-        "phpbb-install-dir"                 : "public",
-        "installer-paths": {
-            "public/ext/{$vendor}/{$name}/" : ["type:phpbb-extension"],
-            "public/styles/{$name}/"        : ["type:phpbb-style"],
-            "public/language/{$name}/"      : ["type:phpbb-language"]
+        "extra": {
+            "phpbb-install-dir"                 : "public",
+            "installer-paths": {
+                "public/ext/{$vendor}/{$name}/" : ["type:phpbb-extension"],
+                "public/styles/{$name}/"        : ["type:phpbb-style"],
+                "public/language/{$name}/"      : ["type:phpbb-language"]
+            }
         }
-    }
 
 4. Add phpBB extensions and themes.
 
-    "require": {
-        ...
-        "xtreamwayz/activity": "dev-master",
-        "xtreamwayz/portal": "dev-master",
-        "xtreamwayz/tools": "dev-master"
-    },
-    "require-dev": {
-        "nicofuma/webprofiler": "~1.0",
-    }
+        "require": {
+            ...
+            "xtreamwayz/activity": "dev-master",
+            "xtreamwayz/portal": "dev-master",
+            "xtreamwayz/tools": "dev-master"
+        },
+        "require-dev": {
+            "nicofuma/webprofiler": "~1.0",
+        }
 
 Run ``composer install`` or ``composer update``.
 
