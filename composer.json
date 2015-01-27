@@ -1,6 +1,6 @@
 {
 	"name": "twentyfirsthall/phpbb-installer",
-	"description": "Composer installer to install phpBB 3.1 into the web root",
+	"description": "Composer installer script to install phpBB 3.1 into the web root",
 	"homepage": "https://github.com/twentyfirsthall/phpbb-installer",
     "license": "MIT",
     "authors": [{
