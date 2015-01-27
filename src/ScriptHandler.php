@@ -132,6 +132,9 @@ class ScriptHandler
 SetEnv PHPBB_NO_COMPOSER_AUTOLOAD true
 SetEnv PHPBB_AUTOLOAD $autoloader
 
+# Enable access to portal
+DirectoryIndex app.php
+
 EOF;
         $io->write('<info>Patching .htaccess</info>', false);
         $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
