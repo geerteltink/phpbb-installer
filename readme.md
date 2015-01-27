@@ -1,6 +1,6 @@
-# Composer phpBB installer
+# Composer phpBB 3.1 installer
 
-This is a composer script which installs phpBB to a given web root. The phpbb files are copied from its vendor dir. Existing files are overwritten. So make sure you don't hack the phpBB source files but use [extensions](https://wiki.phpbb.com/Category:Extensions) and [child themes](https://wiki.phpbb.com/Template_Inheritance_Changes_in_3.1).
+This is a composer script which installs phpBB 3.1 to a given web root. The phpbb files are copied from its vendor dir. Existing files are overwritten. So make sure you don't hack the phpBB source files but use [extensions](https://wiki.phpbb.com/Category:Extensions) and [child themes](https://wiki.phpbb.com/Template_Inheritance_Changes_in_3.1).
 
 Although this is tested on Windows 8.1 and [vagrant-phpbb](https://github.com/twentyfirsthall/vagrant-phpbb), **use at your own risk!!!** Make backups and preferable use a [test server](https://github.com/twentyfirsthall/vagrant-phpbb) before messing up your production server.
 
