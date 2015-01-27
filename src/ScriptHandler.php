@@ -135,6 +135,10 @@ SetEnv PHPBB_AUTOLOAD $autoloader
 # Enable access to portal
 DirectoryIndex app.php
 
+# Extra security
+RedirectMatch 404 ^/(common.php|config.php)
+RedirectMatch 404 ^/(bin|build|cache|config|ext|includes|language|phpbb|store)/
+
 EOF;
         $io->write('<info>Patching .htaccess</info>', false);
         $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
