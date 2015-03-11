@@ -17,23 +17,23 @@ class ScriptHandler
     private static $resources = array(
         // Complete dirs
         '/adm' => '/adm',
-        '/assets' => '/assets',
-        '/bin' => '/bin',
+        '/assets' => '/assets', // v3.1.x
+        '/bin' => '/bin', // v3.1.x
         '/cache' => '/cache',
-        '/config' => '/config',
+        '/config' => '/config', // v3.1.x
         '/download' => '/download',
-        '/ext' => '/ext',
+        '/ext' => '/ext', // v3.1.x
         '/files' => '/files',
         '/images' => '/images',
         '/includes' => '/includes',
         '/install' => '/install',
         '/language' => '/language',
-        '/phpbb' => '/phpbb',
+        '/phpbb' => '/phpbb', // v3.1.x
         '/store' => '/store',
         '/styles' => '/styles',
 
         // Files
-        '/app.php' => '/app.php',
+        '/app.php' => '/app.php', // v3.1.x
         '/common.php' => '/common.php',
         '/cron.php' => '/cron.php',
         '/faq.php' => '/faq.php',
@@ -48,6 +48,8 @@ class ScriptHandler
         '/viewforum.php' => '/viewforum.php',
         '/viewonline.php' => '/viewonline.php',
         '/viewtopic.php' => '/viewtopic.php',
+
+        '/style.php' => '/style.php', // v3.0.x
     );
 
     /**
@@ -82,7 +84,7 @@ class ScriptHandler
         /* @var $package \Composer\Package\PackageInterface */
         foreach ($packages as $package) {
             if ($package->getName() == 'phpbb/phpbb'
-                && version_compare($package->getVersion(), '3.1.0') >= 0
+                && version_compare($package->getVersion(), '3.0') >= 0
             ) {
                 $io->write(sprintf('<info>Detected phpBB %s</info>', $package->getVersion()));
                 $phpbbPackage = $package;
@@ -132,13 +134,6 @@ class ScriptHandler
 SetEnv PHPBB_NO_COMPOSER_AUTOLOAD true
 SetEnv PHPBB_AUTOLOAD $autoloader
 
-# Enable access to portal
-DirectoryIndex app.php
-
-# Extra security
-RedirectMatch 404 ^/(common.php|config.php)
-RedirectMatch 404 ^/(bin|build|cache|config|ext|includes|language|phpbb|store)/
-
 EOF;
         $io->write('<info>Patching .htaccess</info>', false);
         $content .= file_get_contents($src . DIRECTORY_SEPARATOR . '.htaccess');
@@ -179,24 +174,29 @@ EOF;
         }
 
         // Make destination directory
-        if (!is_dir($dest)) {
+        if (is_dir($source) && !is_dir($dest)) {
             mkdir($dest, $permissions);
         }
 
         // Loop through the folder
-        $dir = dir($source);
-        while (false !== $entry = $dir->read()) {
-            // Skip pointers
-            if ($entry == '.' || $entry == '..') {
-                continue;
+        try {
+            $dir = dir($source);
+            while (false !== $entry = $dir->read()) {
+                // Skip pointers
+                if ($entry == '.' || $entry == '..') {
+                    continue;
+                }
+
+                // Deep copy directories
+                self::xcopy("$source/$entry", "$dest/$entry", $permissions);
             }
 
-            // Deep copy directories
-            self::xcopy("$source/$entry", "$dest/$entry", $permissions);
+            // Clean up
+            $dir->close();
+        } catch (\Exception $e) {
+            //
         }
 
-        // Clean up
-        $dir->close();
         return true;
     }
 }
