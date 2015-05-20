@@ -1,7 +1,7 @@
 {
-	"name": "twentyfirsthall/phpbb-installer",
+	"name": "xtreamwayz/phpbb-installer",
 	"description": "Composer installer script to install phpBB 3.1 into the web root",
-	"homepage": "https://github.com/twentyfirsthall/phpbb-installer",
+	"homepage": "https://github.com/xtreamwayz/phpbb-installer",
     "license": "MIT",
     "authors": [{
         "name"    : "Geert Eltink",
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "TwentyFirstHall\\PhpbbInstaller\\": "src/"
+            "XtreamWayz\\PhpbbInstaller\\": "src/"
         }
     }
 }
